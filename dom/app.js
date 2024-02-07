@@ -8,27 +8,36 @@ addStudentBtn.addEventListener("click", addNewStudent);
 
 const students = [
   {
+    id: 1,
     name: "James Dean",
     meanGrades: 8.5,
     grades: [9, 8, 7, 9, 8],
   },
   {
+    id: 2,
+
     name: "Alain Delon",
     meanGrades: 7.8,
     grades: [9, 8, 7, 6, 8],
   },
   {
+    id: 3,
+
     name: "Marilyn Monroe",
     meanGrades: 8.2,
     grades: [8, 7, 9, 8, 8],
   },
   {
+    id: 4,
+
     name: "Audrey Hepburn",
 
     meanGrades: 9.0,
     grades: [10, 9, 8, 9, 10],
   },
   {
+    id: 5,
+
     name: "Grace Kelly",
     meanGrades: 8.7,
     grades: [9, 8, 9, 8, 8],
@@ -57,7 +66,7 @@ window.addEventListener("load", addStudentsToTable);
 function addNewStudent(e) {
   if (e.key === "Enter" || e.target.id == "add-student-btn") {
     const name = studentsNameInput.value;
-    students.push({ name: name, gradesMean: 0, grades: [] });
+    students.push({ id, name: name, gradesMean: 0, grades: [] });
     ///when we add a student, by default will take the given name
     ///the grades mean will be 0 in the first place, the array of grades will be null aswell
 
@@ -72,10 +81,12 @@ function addStudentsToTable() {
     .map(
       (student) => `
       <tr> 
+      <td> ${student.id} </td>
+
       <td> ${student.name} </td>
       <td> ${student.meanGrades} </td>
-      <td> <button>See/Add grades</button> </td>
-      <td> <button>X</button> </td>
+      <td> <button id=${student.id}     class="show-grades">See/Add grades</button> </td>           
+      <td> <button       class="delete-grades">X</button> </td>
       
       </tr>
       `
@@ -126,11 +137,6 @@ function sortStudentsByNameDesc() {
   addStudentsToTable(); //do not forget this
 }
 
-
-
-
-
-
 // ------------------------------------------------------------------------------------------------------------
 
 //1
@@ -156,3 +162,63 @@ function sortStudentsByMeanGradesAsc() {
   addStudentsToTable(); //do not forget this
 }
 // ---------------------------------------------------------------------------------------------------------------
+
+///punem listener pe tbody ca sa verifica clasele din BUTOANELE STERGE NOTE (ADICA BUTONUL X) SI ADAUGA/VEZI NOTE
+/// nu ave rost sa punem pe tot tabelul
+
+const tableBody = document.getElementById("students-table-body");
+
+tableBody.addEventListener("click", handleActions);
+
+/////////////////////////////////////////////////////////////////////////////////////                  YOU CAN USE IT AT SOME POINT
+// function handleActions (e)
+// {
+//   if(e.target.classList.contains('delete-grades'))
+//   {
+//     console.log('x');   /////////////X E PUS INTRE ghilimele!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//   }
+//   else if(e.target.classList.contains('show-grades'))
+//   {
+//        console.log("grades");
+//   }
+// }
+
+// function handleActions(e) {
+//   if (e.target.classList.contains("delete-grades")) {
+//     e.target.parentNode.parentNode.remove(); ////////////////tu aveai de sters un th. parintele paritelui!
+//   } else if (e.target.classList.contains("show-grades")) {
+//     ///aici a aparut problema idului
+//     console.log(e.target.id);
+//     const buttonId=e.target.id;
+//     const student=students.find((student) => buttonId==student.id)
+//     console.log(student);                                                     /////////////////////poti sa te mai uiti odata la asta
+//   }
+// }
+
+function handleActions(e) {
+  if (e.target.classList.contains("delete-grades")) {
+    e.target.parentNode.parentNode.remove(); ////////////////tu aveai de sters un th. parintele paritelui!
+  } else if (e.target.classList.contains("show-grades")) {
+    ///aici a aparut problema idului
+    console.log(e.target.id);
+    const buttonId = e.target.id;
+    const student = students.find((student) => buttonId == student.id);
+
+    const gradesTableBody = document.getElementById("grades-table");
+
+    gradesTableBody.innerHTML = student.grades.map(
+      (grade) =>
+        `
+      <tr>
+
+         <td>${grade}<td/>
+         <td><button class="delete-grade">X</button>
+         <td/>
+
+         </tr>
+
+
+      `
+    ).join(" ");                                            ///////////////////////////                   atentie la join
+  }
+}
