@@ -4,50 +4,41 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <h1>Catalog Note</h1>
+    <h1>Grade Register</h1>
+
+    <!-- ADD STUDENT BUTTON -->
     <div id="add-student-container">
       <input type="text" id="add-student-name" />
-      <button id="add-student-btn">Adauga</button>
+      <button id="add-student-btn">Add Student</button>
     </div>
-    <div id="table-container">
+
+    <!-- TABLE OF GRADES -->
+    <div id="table=container">
       <table border="1" id="students-table">
+        <!-- HEAD OF THE TABLE -->
         <thead>
           <th>
-            Nume <button id="sort-name-asc">↑</button>
+            Name
+            <button id="sort-name-asc">↑</button>
             <button id="sort-name-desc">↓</button>
           </th>
+
           <th>
-            Medie Note <button id="sort-medie-asc">↑</button>
-            <button id="sort-medie-desc">↓</button>
+            Grades Mean
+
+            <button id="sort-mean-asc">↑</button>
+            <button id="sort-mean-desc">↓</button>
           </th>
-          <th>Note student</th>
-          <th>Sterge student</th>
+          <th>Student Grades</th>
+          <th>Delete Student</th>
         </thead>
+
+        <!-- BODY OF THE TABLE -->
         <tbody id="students-table-body"></tbody>
       </table>
-      <br /><br />
-      <div class="grades-table-container hide-grades">
-        <div>
-          <button id="hide-grades">Ascunde notele</button>
-        </div>
-
-        <div id="add-grade">
-          <input type="number" min="1" max="10" value="5" id="grade-input" />
-          <button id="add-grade-btn">Adauga</button>
-        </div>
-
-        <table border="1">
-          <thead>
-            <th>Note</th>
-            <th>Sterge</th>
-          </thead>
-          <tbody id="grades-table"></tbody>
-        </table>
-      </div>
     </div>
-    <script type="module" src="app.js"></script>
+    <script src="app.js"></script>
   </body>
 </html>

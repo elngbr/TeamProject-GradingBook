@@ -1,109 +1,158 @@
-import { students } from "./data/students.js";
-import {
-  updateStudentsTable,
-  addNewRowToStudentsTable,
-  sortStudents,
-  updateGradesTable,
-  updateStudentsAverages,
-  calculateAverage,
-} from "./utils.js";
+// variables
+const studentsNameInput = document.getElementById("add-student-name");
 
-updateStudentsAverages(students);
-
-const studentNameInput = document.getElementById("add-student-name");
 const addStudentBtn = document.getElementById("add-student-btn");
-const gradesTableContainer = document.querySelector(".grades-table-container");
-const studentTableBody = document.getElementById("students-table-body");
-
-studentNameInput.addEventListener("keyup", addNewStudent);
+//listeners
+studentsNameInput.addEventListener("keyup", addNewStudent);
 addStudentBtn.addEventListener("click", addNewStudent);
 
-let selectedStudent;
+const students = [
+  {
+    name: "James Dean",
+    meanGrades: 8.5,
+    grades: [9, 8, 7, 9, 8],
+  },
+  {
+    name: "Alain Delon",
+    meanGrades: 7.8,
+    grades: [9, 8, 7, 6, 8],
+  },
+  {
+    name: "Marilyn Monroe",
+    meanGrades: 8.2,
+    grades: [8, 7, 9, 8, 8],
+  },
+  {
+    name: "Audrey Hepburn",
 
-window.addEventListener("load", () =>
-  updateStudentsTable(students, studentTableBody)
-);
+    meanGrades: 9.0,
+    grades: [10, 9, 8, 9, 10],
+  },
+  {
+    name: "Grace Kelly",
+    meanGrades: 8.7,
+    grades: [9, 8, 9, 8, 8],
+  },
+];
+
+///DO NOT forget to initialise
+//addStudentsToTable(students);
+
+///more elegant
+window.addEventListener("load", addStudentsToTable);
+
+// // Look at it as a counter
+// function addNewStudent(e) {
+//   if (e.key === "Enter" || e.target.id == "add-student-btn") {
+//     console.log("Enter or Click on btn!");
+//   }
+// }
+
+//const students = [];
+
+// ↑↓
+
+// ↓
 
 function addNewStudent(e) {
   if (e.key === "Enter" || e.target.id == "add-student-btn") {
-    const newStudendId = students.length + 1 + "";
-    const newStudent = {
-      id: newStudendId,
-      name: studentNameInput.value,
-      medieNote: 0,
-      note: [],
-    };
-    students.push(newStudent);
-    addNewRowToStudentsTable(newStudent, studentTableBody);
+    const name = studentsNameInput.value;
+    students.push({ name: name, gradesMean: 0, grades: [] });
+    ///when we add a student, by default will take the given name
+    ///the grades mean will be 0 in the first place, the array of grades will be null aswell
+
+    addStudentsToTable();
   }
 }
 
+///FUNCTION TO POPULATE TABLE
+
+function addStudentsToTable() {
+  document.getElementById("students-table-body").innerHTML = students
+    .map(
+      (student) => `
+      <tr> 
+      <td> ${student.name} </td>
+      <td> ${student.meanGrades} </td>
+      <td> <button>See/Add grades</button> </td>
+      <td> <button>X</button> </td>
+      
+      </tr>
+      `
+    )
+    .join(" "); ////do not add any dashes, any commas in  here, you ruin everything
+}
+
+////////////////////SORTING METHODSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 const sortAscByNameBtn = document.getElementById("sort-name-asc");
 const sortDescByNameBtn = document.getElementById("sort-name-desc");
 
-sortAscByNameBtn.addEventListener("click", () =>
-  sortStudents(students, "ASC", "name", studentTableBody)
-);
-sortDescByNameBtn.addEventListener("click", () =>
-  sortStudents(students, "DESC", "name", studentTableBody)
-);
+sortAscByNameBtn.addEventListener("click", sortStudentsByNameAsc);
+sortDescByNameBtn.addEventListener("click", sortStudentsByNameDesc);
 
-const sortAscByMedieBtn = document.getElementById("sort-medie-asc");
-const sortDescByMedieBtn = document.getElementById("sort-medie-desc");
+////////////////////////////////////////////KEEP THESE!!!!
+// function sortStudentsByNameAsc()
+// {
+//   console.log('Asc');
+// }
 
-sortAscByMedieBtn.addEventListener("click", () =>
-  sortStudents(students, "ASC", "medieNote", studentTableBody)
-);
-sortDescByMedieBtn.addEventListener("click", () =>
-  sortStudents(students, "DESC", "medieNote", studentTableBody)
-);
+//  function sortStudentsByNameDesc()
+// {
+//   console.log('Desc');
+// }
 
-const studentsTableBody = document.getElementById("students-table-body");
-const gradesTableBody = document.getElementById("grades-table");
-
-studentsTableBody.addEventListener("click", handleStudentsActions);
-gradesTableBody.addEventListener("click", handleGradesActions);
-
-function handleStudentsActions(e) {
-  if (e.target.classList.contains("delete-student")) {
-    e.target.parentNode.parentNode.remove();
-    // TO REMOVE STUDENT FROM ARRAY
-  } else if (e.target.classList.contains("show-grades")) {
-    const buttonId = e.target.id;
-    gradesTableContainer.classList.remove("hide-grades");
-
-    selectedStudent = students.find((student) => buttonId === student.id);
-    updateGradesTable(selectedStudent, gradesTableBody);
-  }
+///e neintuitiv sa mearga cu stirnguri, dar mergeeeeeeeeeeeeeeeeee!                         BA NU A MERS. E TEAPA. USE LOCAL COMPARE
+function sortStudentsByNameAsc() {
+  students.sort((student1, student2) =>
+    student1.name.localeCompare(student2.name)
+  );
+  console.log(students);
+  addStudentsToTable(); // do not forget this
 }
 
-function handleGradesActions(e) {
-  if (e.target.classList.contains("delete-grade")) {
-    const gradeIndex = Number(e.target.id);
-    selectedStudent.note.splice(gradeIndex, 1);
-    selectedStudent.medieNote = calculateAverage(selectedStudent.note);
-    updateGradesTable(selectedStudent, gradesTableBody);
-    updateStudentsTable(students, studentTableBody);
-  }
+///                                                                           NU MAI FACE ASTA
+// function sortStudentsByNameDesc() {
+//   students.sort((student1, student2)=>student2.name-student1.name);
+//   addStudentsToTable();  //do not forget this
+
+// }
+
+function sortStudentsByNameDesc() {
+  ///////////asta merge!!!!!!!!!!!
+  students.sort((student1, student2) =>
+    student2.name.localeCompare(student1.name)
+  );
+
+  addStudentsToTable(); //do not forget this
 }
 
-const gradeInput = document.getElementById("grade-input");
-const addGradeBtn = document.getElementById("add-grade-btn");
 
-addGradeBtn.addEventListener("click", addGrade);
 
-function addGrade() {
-  const grade = Number(gradeInput.value);
-  console.log(selectedStudent);
-  selectedStudent.note.push(grade);
-  selectedStudent.medieNote = calculateAverage(selectedStudent.note);
-  updateGradesTable(selectedStudent, gradesTableBody);
-  updateStudentsTable(students, studentTableBody);
+
+
+
+// ------------------------------------------------------------------------------------------------------------
+
+//1
+const sortAscByMeanGradesBtn = document.getElementById("sort-mean-asc");
+const sortDescByMeanGradesBtn = document.getElementById("sort-mean-desc");
+
+//2
+sortAscByMeanGradesBtn.addEventListener("click", sortStudentsByMeanGradesAsc); ///astea sunt niste nume de variabile care iau nume de fctii
+sortDescByMeanGradesBtn.addEventListener("click", sortStudentsByMeanGradesDesc); ///daca te ajuta cu ceva
+
+//3
+function sortStudentsByMeanGradesDesc() {
+  students.sort(
+    (student1, student2) => student2.meanGrades - student1.meanGrades
+  );
+  addStudentsToTable(); //do not forget this
 }
 
-const hideGradesBtn = document.getElementById("hide-grades");
-hideGradesBtn.addEventListener("click", hideGradesContainer);
-
-function hideGradesContainer() {
-  gradesTableContainer.classList.add("hide-grades");
+function sortStudentsByMeanGradesAsc() {
+  students.sort(
+    (student1, student2) => student1.meanGrades - student2.meanGrades
+  );
+  addStudentsToTable(); //do not forget this
 }
+// ---------------------------------------------------------------------------------------------------------------
