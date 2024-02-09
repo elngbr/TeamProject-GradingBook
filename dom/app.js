@@ -2,9 +2,15 @@
 const studentsNameInput = document.getElementById("add-student-name");
 
 const addStudentBtn = document.getElementById("add-student-btn");
+
+
+const gradesTableContainer=document.querySelector('.grades-table-container');           ////                   !!!!
 //listeners
 studentsNameInput.addEventListener("keyup", addNewStudent);
 addStudentBtn.addEventListener("click", addNewStudent);
+
+let selectedStudent; /////////  variablia asta e undefined la inceput. vezi hoisting. vezi
+///           o sa tot modificam variablia asta                  vezi var    VS let.       ! ! ! ! !
 
 const students = [
   {
@@ -166,9 +172,9 @@ function sortStudentsByMeanGradesAsc() {
 ///punem listener pe tbody ca sa verifica clasele din BUTOANELE STERGE NOTE (ADICA BUTONUL X) SI ADAUGA/VEZI NOTE
 /// nu ave rost sa punem pe tot tabelul
 
-const tableBody = document.getElementById("students-table-body");
+const studentsTableBody = document.getElementById("students-table-body");
 
-tableBody.addEventListener("click", handleActions);
+studentsTableBody.addEventListener("click", handleStudentActions);
 
 /////////////////////////////////////////////////////////////////////////////////////                  YOU CAN USE IT AT SOME POINT
 // function handleActions (e)
@@ -195,30 +201,120 @@ tableBody.addEventListener("click", handleActions);
 //   }
 // }
 
-function handleActions(e) {
+//1
+const gradesTableBody = document.getElementById("grades-table"); //////////!!!!!!!!!!!!!!!!!!!!!!!!!   acum e global
+
+//2
+gradesTableBody.addEventListener("click", handleGradesActions); ///////handle grades actions e nume de listener
+
+function handleStudentActions(e) {
   if (e.target.classList.contains("delete-grades")) {
-    e.target.parentNode.parentNode.remove(); ////////////////tu aveai de sters un th. parintele paritelui!
+    e.target.parentNode.parentNode.remove(); ////////////////tu aveai de sters un th. => parintele paritelui!
   } else if (e.target.classList.contains("show-grades")) {
     ///aici a aparut problema idului
     console.log(e.target.id);
     const buttonId = e.target.id;
-    const student = students.find((student) => buttonId == student.id);
+    gradesTableContainer.classList.remove('hide-grades');
+    selectedStudent = students.find((student) => buttonId == student.id);
 
-    const gradesTableBody = document.getElementById("grades-table");
+    //const gradesTableBody = document.getElementById("grades-table");
 
-    gradesTableBody.innerHTML = student.grades.map(
-      (grade) =>
-        `
+    gradesTableBody.innerHTML = selectedStudent.grades
+      .map(
+        (grade, index) =>
+          `
       <tr>
 
          <td>${grade}<td/>
-         <td><button class="delete-grade">X</button>
+         <td><button id=${selectedStudent.id}-${index} class="delete-grade"> X </button>
          <td/>
 
          </tr>
 
 
       `
-    ).join(" ");                                            ///////////////////////////                   atentie la join
+      )
+      .join(" "); ///////////////////////////                   atentie la join
+
+    console.log(selectedStudent);
   }
+}
+
+//   stergem note
+
+// function handleGradesActions(e) {
+//   console.log(e.target.id);  ///afisez nota cu indexul ei..................use index!
+
+// }
+
+/////////////////////////////////////////////////////////////////////////////////////////////              look at this
+function handleGradesActions(e) {
+  if (e.target.classList.contains("delete-grade")) {
+    const gradeIndex = Number(e.target.id);
+    console.log("gradeIndex=", gradeIndex);
+    selectedStudent.grades.splice(gradeIndex, 1);
+    // console.log(selectedStudent.grades);                         /// decomentaza sa vezi cum stergi note
+
+    /// might result in glass breaking code                   refelosim maparea ca sa modificam indexul jnotei la fiecare stergere.
+    ///                                       PUTEAM         SA      FAC             FUNCTIE:            RERENDER
+    gradesTableBody.innerHTML = selectedStudent.grades
+      .map(
+        (grade, index) =>
+          `
+      <tr>
+
+         <td>${grade}<td/>
+         <td><button id=${selectedStudent.id}-${index} class="delete-grade"> X </button>
+         <td/>
+
+         </tr>
+
+
+      `
+      )
+      .join(" "); ///////////////////////////                   atentie la join
+
+    console.log(selectedStudent);
+  }
+}
+
+//adaugam note
+const gradeInput = document.getElementById("grade-input");
+const addGradeBtn = document.getElementById("add-grade-btn");
+
+addGradeBtn.addEventListener("click", addGrade);
+
+function addGrade() {
+  const grade = Number(gradeInput.value);
+  selectedStudent.grades.push(grade);
+
+  gradesTableBody.innerHTML = selectedStudent.grades
+    .map(
+      (grade, index) =>
+        `
+      <tr>
+
+         <td>${grade}<td/>
+         <td><button id=${selectedStudent.id}-${index} class="delete-grade"> X </button>
+         <td/>
+
+         </tr>
+
+
+      `
+    )
+    .join(" "); ///////////////////////////                   atentie la join
+}
+
+//ASCUNDEM NOTE
+
+
+
+const hideGradesBtn=document.getElementById('hide-grades');
+
+hideGradesBtn.addEventListener('click', hideGradesContainer);
+
+function hideGradesContainer()
+{
+  gradesTableContainer.classList.add("hide-grades");
 }

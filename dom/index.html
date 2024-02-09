@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <!--                                                                        NU           UITA    SA LEGI CSS SI HTML -->
+    <link rel="stylesheet" href="style.css" />                                 
   </head>
   <body>
     <h1>Grade Register</h1>
@@ -41,21 +43,15 @@
       </table>
       <br /><br /><br /><br />
 
-
-
-
-      <div id="grades-table-container">
-
-
-
-
-        <div id="add-grade">
-          <input type="text" />
-          <button id="add-grade-btn">Add grade</button>
+      <div class="grades-table-container hide-grades">
+        <div>
+          <button id="hide-grades">Hide grades</button>
         </div>
 
-
-
+        <div id="add-grade">
+          <input type="number" min="1" max="10" value="5" id="grade-input" />
+          <button id="add-grade-btn">Add grade</button>
+        </div>
 
         <table border="1">
           <thead>
@@ -65,10 +61,6 @@
 
           <tbody id="grades-table"></tbody>
         </table>
-
-
-
-        
       </div>
     </div>
     <script src="app.js"></script>
